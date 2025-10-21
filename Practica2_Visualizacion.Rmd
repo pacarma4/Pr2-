@@ -340,7 +340,25 @@ Añadir barras de error a un gráfico de línea.
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio5.pdf``.
 
 ```{r Solucion ejercicio 5}
+rm(list=ls())
+setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/Pr2-/data")
+load("Experimento.RData")
+library(ggplot2)
 
+ej5gr <- ggplot(Experimento, aes(x=Dosis, y=Altura, linetype=Complemento, shape= Complemento)) + 
+  geom_point() +
+  geom_line()
+ej5gr <- ej5gr + geom_errorbar(aes(ymin=Altura-Error_Altura, ymax=Altura+Error_Altura),width=0.1)
+ej5gr
+
+ej5gr2 <- ggplot(Experimento, aes(x=Dosis, y=Altura, color = Complemento)) + 
+  geom_point() +
+  geom_line() + 
+  geom_errorbar(aes(ymin=Altura-Error_Altura, ymax=Altura+Error_Altura),width=0.1) + 
+  scale_color_brewer(palette = "Reds")
+ej5gr2
+
+ggsave("Ejericio5.pdf",ej5gr2)
 ```
 
 
@@ -356,10 +374,14 @@ El fichero ``iceRiver.RData`` contiene información del caudal de dos ríos isla
 rm(list=ls())
 setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/Pr2-/data")
 load("iceRiver.RData")
+library(ggplot2)
 
-ej6graf <- ggplot(ice.river.df,aes(x=time))+ geom_line(aes(y=flow.vat), color="red")+geom_line(aes(y=flow.jok),color="blue")+
-  labs(title = "Caudales de dos rios irlandeses en función del tiempo", x ="Tiempo (años)",y ="Caudal")
+ej6graf <- ggplot(ice.river.df,aes(x=time)) + geom_line(aes(y=flow.vat,color="Vat")) + geom_line(aes(y=flow.jok,color="Yok")) +
+  labs(title = "Caudales de dos ríos irlandeses en función del tiempo", x ="Tiempo (años)",y ="Caudal", color = "Río")+
+  scale_color_manual(values = c("Vat"="red", "Yok" = "blue"))
 ej6graf
+  
+ggsave("Ejercicio6.pdf",ej6graf)
 ```
 
 
@@ -376,7 +398,20 @@ En esta sección vamos a utilizar **ggplot2** para representar distribuciones de
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio7.pdf``.
 
 ```{r Solucion ejercicio 7}
+rm(list=ls())
+setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/Pr2-/data")
+load("weatherAUS_distributions.RData")
+library(ggplot2)
 
+ej7gr <- ggplot(ds, aes(x = Year, y = MinTemp)) + geom_boxplot()
+ej7gr
+
+ej7gr2 <- ggplot(ds, aes(x = Year, y = MaxTemp)) + labs(title = "Distribución de temperaturas máximas por año", x = "Año", y = "Temperatura (ºC)") + 
+  geom_boxplot(aes(fill = Year))
+ej7gr2 <- ej7gr2 + scale_x_discrete(guide = guide_axis(angle = 45)) + theme(legend.position = "none")
+ej7gr2
+
+ggsave("Ejercicio7.pdf",ej7gr2)
 ```
 
 ## Histogramas con **ggplot2**
@@ -479,7 +514,28 @@ ggplot(data=dataset_hist1, aes(x=AGE)) +
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio8.pdf``.
 
 ```{r Solucion ejercicio 8}
-# 
+rm(list=ls())
+setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/Pr2-/data")
+
+Assets <- read.table("http://assets.datacamp.com/blog_assets/chol.txt", header =TRUE)
+
+ej8gr <- ggplot(Assets, aes(x=HEIGHT)) + geom_histogram()
+
+ej8gr <- ej8gr + labs(title = "Histograma de la variable Altura", x = "Altura (cm)", y = "Frecuencia")
+
+ej8gr <- ggplot(Assets, aes(x=HEIGHT)) + geom_histogram(breaks=seq(155,195, by =2)) + labs(title = "Histograma de la variable Altura", x = "Altura (cm)", y = "Frecuencia")
+
+ej8gr <- ggplot(Assets, aes(x=HEIGHT)) + 
+  geom_histogram(breaks=seq(155,195, by =2),col="red", fill="blue", alpha = 0.5) +
+  labs(title = "Histograma de la variable Altura", x = "Altura (cm)", y = "Frecuencia")
+
+ej8gr <- ej8gr + geom_density(col="green",linewidth = 1,aes(y = after_stat(count * 2)))
+
+ej8gr <- ej8gr + facet_grid(~MORT)
+
+ej8gr
+
+ggsave("Ejercicio8.pdf",ej8gr)
 
 ```
 
