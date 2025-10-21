@@ -343,19 +343,39 @@ Añadir barras de error a un gráfico de línea.
 
 ```
 
-## Gráficos de boxplot con **ggplot2**
 
-En esta sección vamos a utilizar **ggplot2** para representar distribuciones de datos. Para ello vamos a ver cómo representar gráficos de boxplot. La función **geom_boxplot()** y **geom_violin()** permiten obtener gráficos de tipo de boxplot. La forma de definir los **aes()** es muy similar a como lo hacíamos con otras funciones "geom" que ya hemos utilizado.
+### **Ejercicio 6 **
 
-### **Ejercicio 6**
+El fichero ``iceRiver.RData`` contiene información del caudal de dos ríos islandeses  medidos a diarios durante 3 años. Puedes obtener información detallada de las variables usando ``> ?tseries::ice.river``
+
+  * Representa el caudal de ambos ríos a lo largo del período considerado coloreando una serie (`flow.vat`) en color rojo y la otra en color azul. 
+  * Utiliza la función `labs` para enriquecer el gráfico.
+  * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio5.pdf``.
+
+```{r Solucion ejercicio 6 }
+rm(list=ls())
+setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/Pr2-/data")
+load("iceRiver.RData")
+
+ej6graf <- ggplot(ice.river.df,aes(x=time))+ geom_line(aes(y=flow.vat), color="red")+geom_line(aes(y=flow.jok),color="blue")+
+  labs(title = "Caudales de dos rios irlandeses en función del tiempo", x ="Tiempo (años)",y ="Caudal")
+ej6graf
+```
+
+
+## Gráficos boxplot con **ggplot2**
+
+En esta sección vamos a utilizar **ggplot2** para representar distribuciones de datos. Para ello vamos a ver cómo representar gráficos de tipo boxplot. La función **geom_boxplot()** y **geom_violin()** permiten obtener gráficos de tipo de boxplot. La forma de definir los **aes()** es muy similar a como lo hacíamos con otras funciones "geom" que ya hemos utilizado.
+
+### **Ejercicio 7**
 
 * Carga el fichero ``weatherAUS_distributions.RData``.
 * Crea un gráfico en el que estén los boxplots de la variable ``MinTemp`` para cada uno de los años presentes en la variable ``Year`` del dataset.
-* Crea un gráfico en el que estén los gráficos de violín de la variable ``MaxTemp`` para  cada uno de los años presentes en la variable ``Year`` del dataset.  Añade en el mismo gráfico una capa de etiquetas de título (Distribución de temperaturas máximas por año), eje $x$ (Año) y eje $y$ (Temperatura (ºC)).
-* En el gráfico anterior elimina la leyenda y coloca los años en el eje $x$ a 45 grados de inclinación. Busca información en la red sobre cómo hacer esto.
-* Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio6.pdf``.
+* Crea un gráfico en el que estén los gráficos de violín de la variable ``MaxTemp`` para  cada uno de los años presentes en la variable ``Year`` del dataset.  Añade en el mismo gráfico una capa de etiquetas de título (Distribución de temperaturas máximas por año), eje $x$ (Año) y eje $y$ (Temperatura (ºC)). Colorea el interior de los violines según la la variable ``Year``.
+* En el gráfico anterior elimina la leyenda y coloca los años en el eje $x$ a 45 grados de inclinación. Busca información sobre cómo hacer esto.
+* Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio7.pdf``.
 
-```{r Solucion ejercicio 6}
+```{r Solucion ejercicio 7}
 
 ```
 
@@ -395,15 +415,50 @@ Si queremos que el color de las barras informe sobre la altura de las mismas par
 ggplot(data=dataset_hist1, aes(x=AGE)) +
   geom_histogram(breaks=seq(20, 50, by=2),
                  col="black",
-                 aes(fill=..count..)) +
-  scale_fill_gradient("Count", low="blue", high="red")
+                 aes(fill=after_stat(count))) +
+  scale_fill_gradient(low="blue", high="red")
 ```
 
-Del mismo  modo que podíamos añadir la curva con la estimación de la distribución de datos con las funciones base de R, podemos hacer lo mismo con **ggplot2**.
+Podemos añadir la curva con la estimación de la distribución de datos con `geom_density`
+Pero, ¿Se observa la función de densidad ? Observa la escala `Y`
 
 ```{r}
 ggplot(data=dataset_hist1, aes(x=AGE)) +
-  geom_histogram(aes(y =..density..),  # old notation, now is aes(y=stat(density))
+  geom_histogram(
+                 breaks=seq(18, 54, by = 2),
+                 col="blue",
+                 fill="red",
+                 alpha=.2) +
+  geom_density(col="black") +
+  labs(title="Histograma de la variable Edad", x="Edad", y="Frecuencia")
+```
+Para que ver el histograma y la función de densidad hemos usado la versión normalizada `y =after_stat(density)`. Variable calculada a realizar el histograma.
+
+```
+geom_histogram() uses the same aesthetics as geom_bar(); geom_freqpoly() uses the same aesthetics as geom_line().
+
+Computed variables
+These are calculated by the 'stat' part of layers and can be accessed with delayed evaluation.
+
+after_stat(count)
+number of points in bin.
+
+after_stat(density)
+density of points in bin, scaled to integrate to 1.
+
+after_stat(ncount)
+count, scaled to a maximum of 1.
+
+after_stat(ndensity)
+density, scaled to a maximum of 1.
+
+after_stat(width)
+widths of bins.
+```
+
+```{r}
+ggplot(data=dataset_hist1, aes(x=AGE)) +
+  geom_histogram(aes(y =after_stat(density)),  #OJO USA UNA VARIABLE CALCULADA
                  breaks=seq(18, 54, by = 2),
                  col="blue",
                  fill="red",
@@ -412,18 +467,19 @@ ggplot(data=dataset_hist1, aes(x=AGE)) +
   labs(title="Histograma de la variable Edad", x="Edad", y="Frecuencia")
 ```
 
-### **Ejercicio 7**
+### **Ejercicio 8**
 
-* Descarga de la url  "http://assets.datacamp.com/blog_assets/chol.txt" el dataset de datacamp que utilizarás para este ejercicio utilizando la función **read.table()**.
+* Descarga de la url  "http://assets.datacamp.com/blog_assets/chol.txt" el dataset de Datacamp que utilizarás para este ejercicio y cárgalo en un datafrae .
 * Representa el histograma de la variable ``HEIGHT`` del dataframe cargado del fichero anterior.
 * Añade título ("Histograma de la variable Altura"), una etiqueta en el eje $x$ ("Altura (cm)") y una etiqueta en el eje $y$ ("Frecuencia").
-* Ajusta el rango de representación entre 155 y 195, además consigue que el histograma tenga 20 *bins*.
+* Ajusta el rango de representación entre 155 y 195, además fuerza que el histograma tenga 20 *bins*.(usa parámetro `breaks`)
 * Haz que las barras del histograma sean de color azul con una grado de transparencia del 50% y el contorno de color rojo.
 * Añade la curva de distribución estimada de color verde.
-* Representa el mismo histograma del apartado anterior para cada valor de la variable ``SMOKE``, recuerda utilizar la función **facet_grid()**.
-* Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio7.pdf``.
+* Representa el mismo histograma del apartado anterior para cada valor de la variable ``MORT``, recuerda utilizar la función **facet_grid()**.
+* Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio8.pdf``.
 
-```{r Solucion ejercicio 7}
+```{r Solucion ejercicio 8}
+# 
 
 ```
 
@@ -439,6 +495,8 @@ ggplot(data=ds,aes(x=WindDir9am)) + geom_bar()
 ```
 
 Podemos incluir más información en este tipo de gráficos. Imaginemos que queremos obtener el mismo gráfico de barras pero para dos grupos de datos proporcionados por la variable ``RainToday``.
+
+Cuando en una misma posición (`position`) debemos mostrar información diferente, se pueden realizar varios tipos de representación, por ejemplo apilada (`stacked`) como se indica en la siguiente figura. Esta es la opción por defecto.
 
 ```{r}
 ggplot(data=ds,aes(x=WindDir9am, fill=RainToday)) + geom_bar()
@@ -464,27 +522,42 @@ ggplot(data=ds, aes(x=WindDir9am, fill=RainToday)) + geom_bar() +
         legend.text=element_text(colour="red"),
         legend.background = element_rect(fill="transparent")) +
   labs(title = "Pronóstico de lluvia por dirección del viento a las 9am",
-     subtitle = "Observaciones obtenidas de todas las estaciones del pais",
+     subtitle = "Observaciones obtenidas de todas las estaciones del país",
      caption  = "Fuente: Departamento Australiano de meteorología",
      x        = "Dirección del viento a las 9am",
-     y        = "Numero de días",
+     y        = "Número de días",
      fill     = "RainToday")
 ```
 
-Igual no lo has percibido, pero la función **geom_bar()** de manera implícita, hace cálculos a partir de los datos para construir la representación. Por ejemplo, en los gráficos anteriores se ha calculado las frecuencias (cuentas) de cada valor de la dirección del viento. Estos cálculos se explicitan a través del argumento ``stats`` de las funciones ``geom``. En los casos anteriores la opción por defecto es ``stat="count"`` que calcula frecuencias. Vamos a ver un ejemplo de uso de otro valor del argumento ``stat`` . Vamos a plantearnos representar el valor medio de la variable ``Temp9am`` en función de la variable ``Location``. La variable ``Temp9am`` es numérica (no categórica) y no tendría demasiado sentido utilizar el ``stat="count"``.
+Igual no lo has percibido, pero la función **geom_bar()** de manera implícita, hace cálculos a partir de los datos para construir la representación. Por ejemplo, en los gráficos anteriores se ha calculado las frecuencias (cuentas) de cada valor de la dirección del viento. Estos cálculos se explicitan a través del argumento ``stats`` de las funciones ``geom``. En los casos anteriores la opción por defecto es ``stat="count"`` que calcula frecuencias. Si el recuento ya está hecho y disponemos del número de repeticiones de cada categoría usaremos **geom_col**, o bien, **geom_bar(stat='identity')**.
+
+Vamos a ver un ejemplo de uso de otro valor del argumento ``stat`` . Queremos representar el valor medio de la variable ``Temp9am`` en función de la variable ``Location``. La variable ``Temp9am`` es numérica (no categórica) y no tendría demasiado sentido utilizar el ``stat="count"``.
 
 ```{r}
 ggplot(data=ds,aes(Location, Temp9am, fill=Location)) +
-  geom_bar(stat="summary", fun.y="mean")
+  geom_bar(stat="summary", fun="mean")
 ```
 
 No se ven bien los valores de $x$ en el gráfico... Quitamos la leyenda y giramos las etiquetas de $x$ a 90 grados.
 
 ```{r}
-ggplot(data=ds,aes(Location, Temp9am, fill=Location)) +
-  geom_bar(stat="summary", fun.y="mean") + theme(legend.position="none") +
-  theme(axis.text.x=element_text(angle=90))
+ggplot(data=ds,aes(Location, Temp9am, fill=Location)) + #Muy colorido pero fill=Location es poco útil
+  geom_bar(stat="summary", fun="mean") + 
+  theme(legend.position="none") +
+  theme(axis.text.x=element_text(angle=90)) # probar la opción element_text(angle=90,hjust=1)
 ```
+Podemos mostrar la gráfica ordenando las ciudades (`Location`) según el valor medio (`mean`) de la temperatura (`Temp9am`) en orden decreciente, usando la función **reorder**.   
+Observa los otros elementos del gráfico y su efecto en el resultado.
 
-
-
+```{r}
+#reorder: reordena el factor(Location) segun el resultado de aplicar FUN a Temp9a
+ggplot(data=ds,aes(x=reorder(Location,Temp9am,FUN=mean,decreasing=TRUE), y=Temp9am)) +
+  geom_bar(stat="summary", fun="mean",color='black',alpha=0.5) + 
+  geom_hline(yintercept = mean(ds$Temp9am),color='red')+
+  #annotate permite añadir etiquetas fijas y puntuales en la coordenadas especificadas de un gráfico. En este caso x='Ballarat' es un valor de Location
+  annotate("text", x='Ballarat', y=2+mean(ds$Temp9am), label=paste0('Tª media:',paste0(as.character(round(mean(ds$Temp9am),digits = 2))),'°C'))+
+  theme(legend.position="none") +
+  theme(axis.text.x=element_text(angle=90))+
+  labs(x='Location')+
+  scale_y_continuous(breaks = seq(0,30,by=3),labels = paste0(seq(0,30,by=3),'°')) 
+```
