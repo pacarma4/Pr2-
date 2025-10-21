@@ -131,7 +131,8 @@ p2
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio1.pdf``.
 
 ```{r Solucion ejercicio 1}
-setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/data")
+rm(list=ls())
+setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/Pr2-/data")
 load("weatherAUS.RData")
 library(ggplot2)
 grafico1 <- ggplot(ds, aes(x = MinTemp, y = MaxTemp)) +
@@ -143,6 +144,8 @@ grafico2 <- ggplot(ds, aes(x = MinTemp, y = MaxTemp, color = RainTomorrow)) +
 grafico2
 
 grafico3 <- grafico2 + ggtitle("Grafico de dispersión de temperatura máxima frente a temperatura mínima")
+
+ggsave("Ejercicio1.pdf",grafico3)
 ```
 
 ### **Ejercicio 2**
@@ -154,7 +157,23 @@ grafico3 <- grafico2 + ggtitle("Grafico de dispersión de temperatura máxima fr
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio2.pdf``.
 
 ```{r Solucion ejercicio 2}
+rm(list=ls())
+setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/Pr2-/data")
+load("weatherAUS.RData")
+grafico4 <- ggplot(ds, aes(x=Temp9am, y=Pressure9am)) +
+  geom_point()
+grafico4
 
+grafico5 <- ggplot(ds, aes(x=Temp9am, y=Pressure9am, shape = RainToday)) +
+  geom_point()
+grafico5
+
+grafico6 <- ggplot(ds, aes(x=Temp9am, y=Pressure9am, color = RainToday)) +
+  geom_point()
+grafico6 <-grafico6 +  ggtitle("Gráfico de dispersión de presión frente a temperatura a las 9am")
+grafico6
+
+ggsave("Ejercicio2.pdf",grafico6)
 ```
 
 ### **Ejercicio 3**
@@ -169,6 +188,12 @@ grafico3 <- grafico2 + ggtitle("Grafico de dispersión de temperatura máxima fr
 * Almacena en formato **pdf** el gráfico resultante en un fichero denominado ``Ejercicio3.pdf``.
 
 ```{r Solucion ejercicio 3}
+rm(list=ls())
+setwd("C:/Users/pablo/Documents/CIENCIA DATOS/AED/P2_ALUMNOS/P2_ALUMNOS/Pr2-/data")
+load("iris_tidy.RData")
+
+str(iris.tidy)
+
 
 ```
 
