@@ -194,6 +194,23 @@ load("iris_tidy.RData")
 
 str(iris.tidy)
 
+irisgrafico1 <- ggplot(iris.tidy, aes(x = Species, y = Value))
+
+irisgrafico1 <- irisgrafico1 + geom_point()
+
+irisgrafico2 <- ggplot(iris.tidy, aes(x = Species, y = Value, color = Part)) + 
+  geom_point()
+
+irisgrafico2fil <- irisgrafico2 + facet_grid(Measure~.)
+irisgrafico2fil
+irisgrafico2col <- irisgrafico2 + facet_grid(~Measure)
+irisgrafico2col
+
+irisgrafico3  <- ggplot(iris.tidy, aes(x = Species, y = Value, color = Part)) + 
+  geom_jitter() + facet_grid(~Measure)
+irisgrafico3
+
+ggsave("Ejercicio3.pdf",irisgrafico3)
 
 ```
 
